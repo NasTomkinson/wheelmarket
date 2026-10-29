@@ -1,0 +1,101 @@
+{
+  "kind": "collectionType",
+  "collectionName": "listings",
+  "info": {
+    "singularName": "listing",
+    "pluralName": "listings",
+    "displayName": "Listings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "minLength": 30,
+      "maxLength": 3000
+    },
+    "condition": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "like_new",
+        "excellent",
+        "good",
+        "fair",
+        "refurbished"
+      ],
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "brand": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::wheel-brand.wheel-brand",
+      "required": true
+    },
+    "wheelModel": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "wheelSpecifications": {
+      "type": "component",
+      "component": "data.wheel-specifications",
+      "repeatable": false,
+      "required": true
+    },
+    "partNumber": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 4,
+      "default": 4
+    },
+    "finish": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tyresIncluded": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "tyreType": {
+      "type": "enumeration",
+      "enum": [
+        "budget",
+        "mid_range",
+        "premium"
+      ]
+    },
+    "otherInformation": {
+      "type": "text",
+      "maxLength": 1500
+    }
+  }
+}

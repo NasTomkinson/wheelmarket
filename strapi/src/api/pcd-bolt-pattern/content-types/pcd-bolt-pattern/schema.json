@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pcd_bolt_patterns",
+  "info": {
+    "singularName": "pcd-bolt-pattern",
+    "pluralName": "pcd-bolt-patterns",
+    "displayName": "PCD / Bolt Patterns"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "bolts": {
+      "type": "integer"
+    },
+    "spacing": {
+      "type": "integer"
+    }
+  }
+}

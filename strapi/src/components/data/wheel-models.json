@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_data_wheel_models",
+  "info": {
+    "displayName": "WheelModels"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

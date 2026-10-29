@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "wheel_brands",
+  "info": {
+    "singularName": "wheel-brand",
+    "pluralName": "wheel-brands",
+    "displayName": "Wheel Brands"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "models": {
+      "type": "component",
+      "component": "data.wheel-models",
+      "repeatable": true
+    }
+  }
+}
