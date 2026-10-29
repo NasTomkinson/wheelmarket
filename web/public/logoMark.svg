@@ -1,12 +1,12 @@
 <svg width="181" height="117" viewBox="0 0 181 117" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_105_47)">
-<path d="M45.7024 104.768L119.705 2.39319H131.092V35.8977L114.014 57.9682V41.7477L57.0841 114.607H45.7024V104.768Z" fill="white" style="fill:white;fill-opacity:1;"/>
-<path d="M95.6106 102.375L169.613 0H181V114.607H163.922V39.8864L106.998 114.607H95.6106V102.375Z" fill="white" style="fill:white;fill-opacity:1;"/>
-<path d="M91.3997 2.39319V24.9955L74.2632 46.8V29.2499L11.4243 114.607H0V2.39319H17.1364V76.5818L74.2632 2.39319H91.3997Z" fill="white" style="fill:white;fill-opacity:1;"/>
+<path d="M45.7024 104.768L119.705 2.39319H131.092V35.8977L114.014 57.9682V41.7477L57.0841 114.607H45.7024V104.768Z" fill="black"/>
+<path d="M95.6106 102.375L169.613 0H181V114.607H163.922V39.8864L106.998 114.607H95.6106V102.375Z" fill="black" />
+<path d="M91.3997 2.39319V24.9955L74.2632 46.8V29.2499L11.4243 114.607H0V2.39319H17.1364V76.5818L74.2632 2.39319H91.3997Z" fill="black" />
 </g>
 <defs>
 <clipPath id="clip0_105_47">
-<rect width="181" height="117" fill="white" style="fill:white;fill-opacity:1;"/>
+<rect width="181" height="117" fill="black" />
 </clipPath>
 </defs>
 </svg>

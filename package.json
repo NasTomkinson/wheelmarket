@@ -14,6 +14,15 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "better-sqlite3"
-    ]
+    ],
+    "overrides": {
+      "@ntunify/styles": "link:../ntunify/packages/styles",
+      "@ntunify/core": "link:../ntunify/packages/core"
+    }
+  },
+  "dependencies": { 
+    "@ntunify/core": "link:../ntunify/packages/core",
+    "@ntunify/styles": "link:../ntunify/packages/styles",
+    "core": "link:../../../Users/nasto/AppData/Local/pnpm/global/5/node_modules/@ntunify/core"
   }
 }

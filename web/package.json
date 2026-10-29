@@ -9,10 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@ntunify/core": "^0.0.2",
+    "@iconify-icon/react": "^3.0.5",
+    "@ntunify/core": "^0.0.5",
+    "@ntunify/styles": "0.0.5",
+    "@strapi/client": "^1.6.2",
     "next": "16.3.4",
+    "next-auth": "^4.24.15",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-hook-form": "^7.91.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
