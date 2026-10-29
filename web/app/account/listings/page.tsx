@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getAllListings, getStrapiMediaUrl, type Listing } from "@/utils/strapi/listings";
+import { getServerSession } from "next-auth";
+import { getListingsForUser, getStrapiMediaUrl, type Listing } from "@/utils/strapi/listings";
+import { authOptions } from "@/utils/auth/options";
 
 export const dynamic = "force-dynamic";
 
@@ -104,11 +106,13 @@ function ListingCard({ listing }: { listing: Listing }) {
 }
 
 export default async function Listings() {
+  const session = await getServerSession(authOptions);
   let listings: Listing[] = [];
   let loadFailed = false;
 
   try {
-    listings = await getAllListings();
+    if (!session?.user?.id) throw new Error("Authenticated user ID is missing.");
+    listings = await getListingsForUser(session.user.id);
   } catch (error) {
     loadFailed = true;
     console.error("Unable to render listings", error);

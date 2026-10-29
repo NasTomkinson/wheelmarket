@@ -538,6 +538,11 @@ export interface ApiListingListing extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<4>;
+    seller: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Required;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{

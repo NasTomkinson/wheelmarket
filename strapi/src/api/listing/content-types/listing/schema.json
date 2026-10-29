@@ -54,6 +54,12 @@
       "target": "api::wheel-brand.wheel-brand",
       "required": true
     },
+    "seller": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
     "wheelModel": {
       "type": "string",
       "required": true,

@@ -1,5 +1,5 @@
 import { S_CLIENT } from "@/utils/strapi/client";
-import { getAllListings } from "@/utils/strapi/listings";
+import { getListingsForUser } from "@/utils/strapi/listings";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth/options";
 
@@ -101,6 +101,12 @@ export async function POST(request: Request) {
     return Response.json({ message: "You must be signed in to create a listing." }, { status: 401 });
   }
 
+  const sellerId = Number(session.user.id);
+
+  if (!Number.isSafeInteger(sellerId) || sellerId < 1) {
+    return Response.json({ message: "Your user account could not be identified." }, { status: 401 });
+  }
+
   let formData: FormData;
 
   try {
@@ -148,6 +154,7 @@ export async function POST(request: Request) {
 
     const listing = await S_CLIENT.collection("listings").create({
       images: uploadedFileIds,
+      seller: sellerId,
       title: String(data.title).trim(),
       description: String(data.description).trim(),
       condition: data.condition,
@@ -186,8 +193,14 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return Response.json({ message: "You must be signed in to view your listings." }, { status: 401 });
+  }
+
   try {
-    const listings = await getAllListings();
+    const listings = await getListingsForUser(session.user.id);
 
     return Response.json({ data: listings }, { status: 200 });
   } catch (error) {

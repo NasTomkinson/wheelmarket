@@ -31,6 +31,10 @@ export type Listing = {
     documentId: string;
     name: string;
   } | null;
+  seller?: {
+    id: number;
+    username: string;
+  } | null;
   wheelSpecifications?: {
     id: number;
     diameter: number;
@@ -56,6 +60,9 @@ const listingQuery = {
     brand: {
       fields: ["name"],
     },
+    seller: {
+      fields: ["username"],
+    },
     wheelSpecifications: {
       populate: {
         pcd_bolt_pattern: {
@@ -66,11 +73,15 @@ const listingQuery = {
   },
 };
 
-async function getListingsByStatus(status: "draft" | "published") {
+async function getListingsByStatus(status: "draft" | "published", userId?: number) {
   const collection = S_CLIENT.collection("listings");
+  const filters = userId
+    ? { seller: { id: { $eq: userId } } }
+    : undefined;
   const firstPage = await collection.find({
     ...listingQuery,
     status,
+    filters,
     pagination: { page: 1, pageSize: 100, withCount: true },
   });
   const pageCount = firstPage.meta?.pagination?.pageCount ?? 1;
@@ -79,6 +90,7 @@ async function getListingsByStatus(status: "draft" | "published") {
       collection.find({
         ...listingQuery,
         status,
+        filters,
         pagination: { page: index + 2, pageSize: 100, withCount: false },
       }),
     ),
@@ -91,6 +103,27 @@ export async function getAllListings() {
   const [drafts, published] = await Promise.all([
     getListingsByStatus("draft"),
     getListingsByStatus("published"),
+  ]);
+  const listingsByDocumentId = new Map<string, Listing>();
+
+  drafts.forEach((listing) => listingsByDocumentId.set(listing.documentId, listing));
+  published.forEach((listing) => listingsByDocumentId.set(listing.documentId, listing));
+
+  return Array.from(listingsByDocumentId.values()).sort(
+    (first, second) => Date.parse(second.createdAt) - Date.parse(first.createdAt),
+  );
+}
+
+export async function getListingsForUser(userId: string | number) {
+  const numericUserId = Number(userId);
+
+  if (!Number.isSafeInteger(numericUserId) || numericUserId < 1) {
+    throw new Error("A valid Strapi user ID is required to load listings.");
+  }
+
+  const [drafts, published] = await Promise.all([
+    getListingsByStatus("draft", numericUserId),
+    getListingsByStatus("published", numericUserId),
   ]);
   const listingsByDocumentId = new Map<string, Listing>();
 
