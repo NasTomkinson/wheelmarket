@@ -17,7 +17,7 @@ export type Listing = {
   publishedAt: string | null;
   title: string;
   description: string;
-  condition: string;
+  condition: "new" | "used" | "refurbished" | "damaged";
   price: number;
   wheelModel: string;
   partNumber?: string | null;
@@ -34,6 +34,7 @@ export type Listing = {
   seller?: {
     id: number;
     username: string;
+    location?: string | null;
   } | null;
   wheelSpecifications?: {
     id: number;
@@ -51,6 +52,8 @@ export type Listing = {
   } | null;
 };
 
+export type ListingFilters = Record<string, unknown>;
+
 const listingQuery = {
   sort: ["createdAt:desc"],
   populate: {
@@ -61,7 +64,7 @@ const listingQuery = {
       fields: ["name"],
     },
     seller: {
-      fields: ["username"],
+      fields: ["username", "location"],
     },
     wheelSpecifications: {
       populate: {
@@ -73,11 +76,16 @@ const listingQuery = {
   },
 };
 
-async function getListingsByStatus(status: "draft" | "published", userId?: number) {
+async function getListingsByStatus(
+  status: "draft" | "published",
+  userId?: number,
+  searchFilters?: ListingFilters,
+) {
   const collection = S_CLIENT.collection("listings");
-  const filters = userId
-    ? { seller: { id: { $eq: userId } } }
-    : undefined;
+  const userFilters = userId ? { seller: { id: { $eq: userId } } } : undefined;
+  const filters = userFilters && searchFilters
+    ? { $and: [userFilters, searchFilters] }
+    : userFilters ?? searchFilters;
   const firstPage = await collection.find({
     ...listingQuery,
     status,
@@ -114,8 +122,8 @@ export async function getAllListings() {
   );
 }
 
-export async function getActiveListings() {
-  return getListingsByStatus("published");
+export async function getActiveListings(filters?: ListingFilters) {
+  return getListingsByStatus("published", undefined, filters);
 }
 
 export async function getListingsForUser(userId: string | number) {

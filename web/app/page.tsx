@@ -28,15 +28,8 @@ export default function Home() {
   return (
     <div className=" ">
       <main>  
-
-        <section className="container grid grid-cols-4 gap-4 mt-12">
-          <ProductCard />          
-          <ProductCard />          
-          <ProductCard />          
-          <ProductCard />          
-          <ProductCard />          
-          <ProductCard />          
-        </section>
+ 
+        Homepage
 
       </main>
     </div>

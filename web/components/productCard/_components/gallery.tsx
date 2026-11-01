@@ -1,9 +1,10 @@
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Pagination } from "swiper/modules";
 import { getStrapiMediaUrl } from "@/utils/helpers";
+import type { ListingImage } from "@/utils/strapi/listings";
 import Image from 'next/image'
- 
-export default function CardGallery(slides: any) {
+
+export default function CardGallery({ slides }: { slides: ListingImage[] }) {
   
     return (
         <Swiper
@@ -13,13 +14,13 @@ export default function CardGallery(slides: any) {
             loop={true}
             pagination={{ clickable: true }}
             > 
-            {  slides?.slides.map((image, key: number) => { 
+            {slides.map((image) => {
                 return (
-                    <SwiperSlide key={key}> 
+                    <SwiperSlide key={image.documentId}>
                         <Image  
                             className="w-full h-full object-cover"
                             src={getStrapiMediaUrl(image.url)}
-                            alt={image.alternativeText}
+                            alt={image.alternativeText ?? "Wheel listing image"}
                             width={400}
                             height={200} 
                         /> 
@@ -27,5 +28,5 @@ export default function CardGallery(slides: any) {
                 )
             })}
         </Swiper>
-    )
+    );
 }

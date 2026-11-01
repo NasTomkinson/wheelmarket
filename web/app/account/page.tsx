@@ -8,6 +8,9 @@ export default async function AccountPage(){
         <div className="container"> 
             <h1 className="text-3xl font-bold text-neutral-dark">Welcome, {session?.user?.username}</h1>
             <p className="mt-2 text-neutral-dark/70">Manage your listings and account settings.</p>
+            {session?.user?.location && (
+                <p className="mt-1 text-neutral-dark/70">Collection location: {session.user.location}</p>
+            )}
         </div>
     )
 }

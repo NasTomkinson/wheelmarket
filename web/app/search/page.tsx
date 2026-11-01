@@ -1,43 +1,98 @@
 "use client";
 
-import Filters from "@/components/filters";
 import ProductCard from "@/components/productCard";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState, type ComponentProps } from "react";
+import { useSearchParams } from "next/navigation";
+import Filters from "@/components/filters";
 
-export default function Search() {
-  
-  // Store PCD Options
-  const [results, setResults] = useState([])
+type SearchResult = ComponentProps<typeof ProductCard> & { id: number };
 
-  // GET PCD Options
+function SearchResults() {
+  const searchParams = useSearchParams();
+  const query = searchParams.toString();
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
   useEffect(() => {
+    const controller = new AbortController();
 
-    async function getListings(){
+    async function getListings() {
+      setIsLoading(true);
+      setError("");
 
-      const PCDResp = await fetch("/api/search", {
-        method: "GET"
-      })
+      try {
+        const response = await fetch(`/api/search${query ? `?${query}` : ""}`, {
+          signal: controller.signal,
+        });
+        const payload = await response.json();
 
-      const PCDData = await PCDResp.json()
-  
-      setResults(PCDData.data)
+        if (!response.ok) {
+          throw new Error(payload.message ?? "Unable to load search results.");
+        }
+
+        if (!controller.signal.aborted) {
+          setResults(Array.isArray(payload.data) ? payload.data : []);
+        }
+      } catch (requestError) {
+        if (requestError instanceof Error && requestError.name === "AbortError") {
+          return;
+        }
+
+        if (!controller.signal.aborted) {
+          setResults([]);
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Unable to load search results.",
+          );
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
     }
 
-    getListings() 
-  }, [])
+    getListings();
+
+    return () => controller.abort();
+  }, [query]);
 
   return (
     <div className=" ">
-      <main>   
-        <section className="container my-4"> 
+      <main>
+        {isLoading && (
+          <p className="container mt-12" role="status">
+            Loading results…
+          </p>
+        )}
+        {error && (
+          <p className="container mt-12 text-primary" role="alert">
+            {error}
+          </p>
+        )}
+        {!isLoading && !error && results.length === 0 && (
+          <p className="container mt-12">No matching listings found.</p>
+        )}
+        <section className="sticky top-8 left-0  container mt-4 flex flex-col justify-center items-center z-999">
           <Filters />
         </section>
-        <section className="container grid grid-cols-4 gap-4 mt-12">
-          { results && results.length > 0 && results.map(result => (
-            <ProductCard key={result?.id} {...result} />    
-          ))} 
-        </section> 
+
+        <section className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+          {results.map((result) => (
+            <ProductCard key={result.id} {...result} />
+          ))}
+        </section>
       </main>
     </div>
+  );
+}
+
+export default function Search() {
+  return (
+    <Suspense fallback={<div className="container mt-12">Loading results…</div>}>
+      <SearchResults />
+    </Suspense>
   );
 }

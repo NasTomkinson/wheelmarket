@@ -7,6 +7,7 @@ type StrapiAuthResponse = {
     id: number;
     username: string;
     email: string;
+    location?: string;
     blocked?: boolean;
     confirmed?: boolean;
   };
@@ -57,6 +58,7 @@ export const authOptions: NextAuthOptions = {
           name: data.user.username,
           email: data.user.email,
           username: data.user.username,
+          location: data.user.location,
           strapiAccessToken: data.jwt,
         };
       },
@@ -67,6 +69,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.userId = user.id;
         token.username = user.username;
+        token.location = user.location;
         token.strapiAccessToken = user.strapiAccessToken;
       }
 
@@ -76,6 +79,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.userId;
         session.user.username = token.username;
+        session.user.location = token.location;
       }
 
       return session;

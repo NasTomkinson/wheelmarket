@@ -1,11 +1,29 @@
-import { getActiveListings } from "@/utils/strapi/listings";
+import {
+  QueryEngine,
+  QueryEngineValidationError,
+} from "@/utils/strapi/query-engine";
+import type { NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const listings = await getActiveListings();
+    const engine = new QueryEngine(request.nextUrl.searchParams);
+    const result = await engine.search();
 
-    return Response.json({ data: listings }, { status: 200 });
+    return Response.json(
+      {
+        data: result.listings,
+        meta: {
+          params: result.params,
+          resolvedFitments: result.resolvedFitments,
+        },
+      },
+      { status: 200 },
+    );
   } catch (error) {
+    if (error instanceof QueryEngineValidationError) {
+      return Response.json({ message: error.message }, { status: 400 });
+    }
+
     console.error("Unable to load active listings", error);
 
     return Response.json(

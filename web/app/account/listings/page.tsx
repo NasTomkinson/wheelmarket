@@ -21,11 +21,9 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
 
 const conditionLabels: Record<string, string> = {
   new: "New",
-  like_new: "Like new",
-  excellent: "Excellent",
-  good: "Good",
-  fair: "Fair",
+  used: "Used",
   refurbished: "Refurbished",
+  damaged: "Damaged / for repair",
 };
 
 function ListingCard({ listing }: { listing: Listing }) {

@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 type RegisterValues = {
   username: string;
   email: string;
+  location: string;
   password: string;
   confirmPassword: string;
 };
@@ -24,7 +25,13 @@ export default function RegisterForm() {
     setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({
-    defaultValues: { username: "", email: "", password: "", confirmPassword: "" },
+    defaultValues: {
+      username: "",
+      email: "",
+      location: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   async function onSubmit(values: RegisterValues) {
@@ -35,6 +42,7 @@ export default function RegisterForm() {
         body: JSON.stringify({
           username: values.username,
           email: values.email,
+          location: values.location,
           password: values.password,
         }),
       });
@@ -93,6 +101,23 @@ export default function RegisterForm() {
           })}
         />
         {errors.email && <p className="mt-1 text-sm text-red-700">{errors.email.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="location" className="mb-1.5 block text-sm font-semibold">Collection location</label>
+        <input
+          id="location"
+          autoComplete="address-level2"
+          placeholder="Town or city"
+          className={inputClass}
+          {...register("location", {
+            required: "Enter a collection location.",
+            minLength: { value: 2, message: "Use at least 2 characters." },
+            maxLength: { value: 120, message: "Use no more than 120 characters." },
+          })}
+        />
+        <p className="mt-1 text-xs text-neutral-dark/60">Use a general area, not your full address.</p>
+        {errors.location && <p className="mt-1 text-sm text-red-700">{errors.location.message}</p>}
       </div>
 
       <div>

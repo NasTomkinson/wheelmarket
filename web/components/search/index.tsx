@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type VehicleModel = {
   id: string;
@@ -20,6 +21,7 @@ type VehiclesResponse = {
 };
 
 export default function Search() {
+  const router = useRouter();
   const [makes, setMakes] = useState<VehicleMake[]>([]);
   const [makeId, setMakeId] = useState("");
   const [modelId, setModelId] = useState("");
@@ -42,6 +44,11 @@ export default function Search() {
         }
 
         setMakes(Array.isArray(payload.data) ? payload.data : []);
+
+        const currentParams = new URLSearchParams(window.location.search);
+        setMakeId(currentParams.get("make") ?? "");
+        setModelId(currentParams.get("model") ?? "");
+        setYear(currentParams.get("year") ?? "");
       } catch (requestError) {
         if (requestError instanceof Error && requestError.name === "AbortError") {
           return;
@@ -65,15 +72,31 @@ export default function Search() {
   }, []);
 
   const selectedMake = useMemo(
-    () => makes.find((make) => make.id === makeId),
+    () => makes.find((make) => make.name === makeId),
     [makeId, makes],
   );
   const models = selectedMake?.models ?? [];
-  const years = models.find((model) => model.id === modelId)?.years ?? [];
+  const years = models.find((model) => model.name === modelId)?.years ?? [];
+
+  function submitSearch() {
+    const params = new URLSearchParams(window.location.search);
+
+    for (const [name, value] of [
+      ["make", makeId],
+      ["model", modelId],
+      ["year", year],
+    ]) {
+      if (value) params.set(name, value);
+      else params.delete(name);
+    }
+
+    const query = params.toString();
+    router.push(`/search${query ? `?${query}` : ""}`);
+  }
 
   return (
     <div className="search">
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 ">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-4 ">
         <label className="sr-only" htmlFor="vehicle-make">
           Brand
         </label>
@@ -92,7 +115,7 @@ export default function Search() {
             {isLoading ? "Loading brands…" : "Select brand"}
           </option>
           {makes.map((make) => (
-            <option key={make.id} value={make.id}>
+            <option key={make.id} value={make.name}>
               {make.name}
             </option>
           ))}
@@ -113,7 +136,7 @@ export default function Search() {
         >
           <option value="">Select model</option>
           {models.map((model) => (
-            <option key={model.id} value={model.id}>
+            <option key={model.id} value={model.name}>
               {model.name}
             </option>
           ))}
@@ -138,7 +161,20 @@ export default function Search() {
             </option>
           ))}
         </select>
+
+        <div>
+          <button
+            type="button"
+            onClick={submitSearch}
+            className="btn btn-primary"
+          >
+            Search
+          </button>
+        </div>
       </div>
+      {/* <div>
+        <button> Advanced Search </button>
+      </div> */}
 
       {error && (
         <p className="mt-2 text-sm text-primary" role="alert">

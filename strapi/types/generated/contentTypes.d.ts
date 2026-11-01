@@ -488,7 +488,7 @@ export interface ApiListingListing extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required;
     condition: Schema.Attribute.Enumeration<
-      ['new', 'like_new', 'excellent', 'good', 'fair', 'refurbished']
+      ['new', 'used', 'refurbished', 'damaged']
     > &
       Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
@@ -1307,6 +1307,11 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
+    location: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 120;
+        minLength: 2;
+      }>;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{

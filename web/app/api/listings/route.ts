@@ -6,11 +6,9 @@ import { authOptions } from "@/utils/auth/options";
 const acceptedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 const conditionOptions = new Set([
   "new",
-  "like_new",
-  "excellent",
-  "good",
-  "fair",
+  "used",
   "refurbished",
+  "damaged",
 ]);
 const constructionOptions = new Set(["cast", "flow_formed", "forged"]);
 const tyreTypeOptions = new Set(["budget", "mid_range", "premium"]);

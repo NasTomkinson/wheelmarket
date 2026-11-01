@@ -17,7 +17,7 @@
 @layer components {
   
   .container {
-    @apply mx-auto;
+    @apply mx-auto px-4;
   }
 
   .search {  
@@ -72,7 +72,7 @@
 
   select { 
     appearance: base-select;
-    @apply bg-white border-b border-neutral-light px-3 py-2;
+    @apply    px-2 py-1 flex flex-row justify-center items-center;
 
     &::picker-icon {
       content: "-";
@@ -80,13 +80,29 @@
     } 
 
     option {
-      @apply text-neutral-dark px-3 py-2 hover:bg-white ; 
+      @apply text-neutral-dark px-2 py-1 hover:bg-white ; 
     }
   }
   
   ::picker(select) { 
     appearance: base-select;
     @apply bg-white/50 backdrop-blur-xl border-0 rounded-xl mt-2;
+  }
+
+  input[type="checkbox"] {
+    @apply relative appearance-none w-10 h-5 accent-primary border border-neutral rounded-full transition-all;
+
+    &::after {
+      @apply content-[''] w-4 h-4 bg-neutral rounded-full absolute top-0.25 left-0.25 transition-all;
+    }
+
+    &:checked {
+      @apply bg-primary border-primary;
+
+        &::after {
+          @apply  bg-white rounded-full transform translate-x-5 ;
+        }
+    }
   }
 }
 

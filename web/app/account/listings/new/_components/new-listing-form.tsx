@@ -330,11 +330,9 @@ export default function NewListingForm() {
             <select id="condition" className={inputClass} {...register("condition", { required: "Choose a condition." })}>
               <option value="">Select condition</option>
               <option value="new">New</option>
-              <option value="like_new">Like new</option>
-              <option value="excellent">Excellent</option>
-              <option value="good">Good</option>
-              <option value="fair">Fair</option>
+              <option value="used">Used</option>
               <option value="refurbished">Refurbished</option>
+              <option value="damaged">Damaged / for repair</option>
             </select>
             <ErrorMessage message={errors.condition?.message} />
           </div>

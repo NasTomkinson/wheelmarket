@@ -1,6 +1,7 @@
 type RegistrationPayload = {
   username?: unknown;
   email?: unknown;
+  location?: unknown;
   password?: unknown;
 };
 
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
 
   const username = typeof data.username === "string" ? data.username.trim() : "";
   const email = typeof data.email === "string" ? data.email.trim().toLowerCase() : "";
+  const location = typeof data.location === "string" ? data.location.trim() : "";
   const password = typeof data.password === "string" ? data.password : "";
 
   if (username.length < 3 || username.length > 50) {
@@ -32,6 +34,12 @@ export async function POST(request: Request) {
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return Response.json({ message: "Enter a valid email address." }, { status: 400 });
+  }
+  if (location.length < 2 || location.length > 120) {
+    return Response.json(
+      { message: "Location must be between 2 and 120 characters." },
+      { status: 400 },
+    );
   }
   if (password.length < 8 || password.length > 128) {
     return Response.json({ message: "Password must be between 8 and 128 characters." }, { status: 400 });
@@ -41,7 +49,7 @@ export async function POST(request: Request) {
     const response = await fetch(`${strapiUrl}/api/auth/local/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, email, location, password }),
       cache: "no-store",
     });
     const body = (await response.json()) as unknown;

@@ -35,11 +35,9 @@
       "type": "enumeration",
       "enum": [
         "new",
-        "like_new",
-        "excellent",
-        "good",
-        "fair",
-        "refurbished"
+        "used",
+        "refurbished",
+        "damaged"
       ],
       "required": true
     },
