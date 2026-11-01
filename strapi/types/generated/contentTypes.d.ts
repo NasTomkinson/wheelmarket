@@ -581,7 +581,15 @@ export interface ApiPcdBoltPatternPcdBoltPattern
     draftAndPublish: true;
   };
   attributes: {
-    bolts: Schema.Attribute.Integer;
+    bolts: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 10;
+          min: 3;
+        },
+        number
+      >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -592,10 +600,96 @@ export interface ApiPcdBoltPatternPcdBoltPattern
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    spacing: Schema.Attribute.Integer;
+    spacing: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 250;
+          min: 80;
+        },
+        number
+      >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiVehicleMakeVehicleMake extends Struct.CollectionTypeSchema {
+  collectionName: 'vehicle_makes';
+  info: {
+    displayName: 'Vehicle Makes';
+    pluralName: 'vehicle-makes';
+    singularName: 'vehicle-make';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::vehicle-make.vehicle-make'
+    > &
+      Schema.Attribute.Private;
+    models: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::vehicle-model.vehicle-model'
+    >;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 80;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiVehicleModelVehicleModel
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'vehicle_models';
+  info: {
+    displayName: 'Vehicle Models';
+    pluralName: 'vehicle-models';
+    singularName: 'vehicle-model';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::vehicle-model.vehicle-model'
+    > &
+      Schema.Attribute.Private;
+    make: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::vehicle-make.vehicle-make'
+    > &
+      Schema.Attribute.Required;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vehicles: Schema.Attribute.Relation<'oneToMany', 'api::vehicle.vehicle'>;
   };
 }
 
@@ -610,19 +704,101 @@ export interface ApiVehicleVehicle extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    centreBore: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 150;
+          min: 30;
+        },
+        number
+      >;
+    chassisCode: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 50;
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    generation: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::vehicle.vehicle'
     > &
       Schema.Attribute.Private;
+    lugTorqueNm: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 300;
+          min: 50;
+        },
+        number
+      >;
+    market: Schema.Attribute.Enumeration<
+      ['uk', 'europe', 'north_america', 'global', 'other']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'uk'>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 150;
+      }>;
+    notes: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 1500;
+      }>;
+    pcdBoltPattern: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pcd-bolt-pattern.pcd-bolt-pattern'
+    > &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    threadSize: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 30;
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    variant: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 100;
+      }>;
+    vehicleModel: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::vehicle-model.vehicle-model'
+    > &
+      Schema.Attribute.Required;
+    wheelFitments: Schema.Attribute.Component<
+      'data.vehicle-wheel-fitment',
+      true
+    > &
+      Schema.Attribute.Required;
+    yearFrom: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 2100;
+          min: 1886;
+        },
+        number
+      >;
+    yearTo: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 2100;
+          min: 1886;
+        },
+        number
+      >;
   };
 }
 
@@ -1169,6 +1345,8 @@ declare module '@strapi/strapi' {
       'api::configuration.configuration': ApiConfigurationConfiguration;
       'api::listing.listing': ApiListingListing;
       'api::pcd-bolt-pattern.pcd-bolt-pattern': ApiPcdBoltPatternPcdBoltPattern;
+      'api::vehicle-make.vehicle-make': ApiVehicleMakeVehicleMake;
+      'api::vehicle-model.vehicle-model': ApiVehicleModelVehicleModel;
       'api::vehicle.vehicle': ApiVehicleVehicle;
       'api::wheel-brand.wheel-brand': ApiWheelBrandWheelBrand;
       'plugin::content-releases.release': PluginContentReleasesRelease;

@@ -12,10 +12,16 @@
   "pluginOptions": {},
   "attributes": {
     "bolts": {
-      "type": "integer"
+      "type": "integer",
+      "required": true,
+      "min": 3,
+      "max": 10
     },
     "spacing": {
-      "type": "integer"
+      "type": "decimal",
+      "required": true,
+      "min": 80,
+      "max": 250
     }
   }
 }

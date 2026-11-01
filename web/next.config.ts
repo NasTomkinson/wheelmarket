@@ -10,12 +10,13 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: strapiUrl.protocol.replace(":", "") as "http" | "https",
-        hostname: strapiUrl.hostname,
-        port: strapiUrl.port,
+        protocol: "http",
+        hostname: "localhost",
+        port: "1337",
         pathname: "/uploads/**",
       },
     ],
+    dangerouslyAllowLocalIP: process.env.NODE_ENV === "development",
   },
 };
 

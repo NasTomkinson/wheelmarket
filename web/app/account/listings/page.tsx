@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { getListingsForUser, getStrapiMediaUrl, type Listing } from "@/utils/strapi/listings";
+import { getStrapiMediaUrl } from "@/utils/helpers";
+import { getListingsForUser, type Listing } from "@/utils/strapi/listings";
 import { authOptions } from "@/utils/auth/options";
 
 export const dynamic = "force-dynamic";

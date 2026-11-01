@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vehicle_makes",
+  "info": {
+    "singularName": "vehicle-make",
+    "pluralName": "vehicle-makes",
+    "displayName": "Vehicle Makes"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "maxLength": 80
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "models": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vehicle-model.vehicle-model",
+      "mappedBy": "make"
+    }
+  }
+}

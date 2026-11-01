@@ -114,6 +114,10 @@ export async function getAllListings() {
   );
 }
 
+export async function getActiveListings() {
+  return getListingsByStatus("published");
+}
+
 export async function getListingsForUser(userId: string | number) {
   const numericUserId = Number(userId);
 
@@ -133,11 +137,4 @@ export async function getListingsForUser(userId: string | number) {
   return Array.from(listingsByDocumentId.values()).sort(
     (first, second) => Date.parse(second.createdAt) - Date.parse(first.createdAt),
   );
-}
-
-export function getStrapiMediaUrl(path: string) {
-  if (/^https?:\/\//i.test(path)) return path;
-
-  const baseUrl = (process.env.STRAPI_URL ?? "http://localhost:1337").replace(/\/api\/?$/, "");
-  return `${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 }

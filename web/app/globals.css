@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+/* @import 'swiper/css/pagination'; */
 /* @import "@ntunify/styles"; */
 
 @theme { 
@@ -53,6 +56,37 @@
         } 
       } 
     }
+  }
+
+  .swiper-pagination {
+    @apply absolute bottom-0 left-0 w-full flex flex-row justify-center items-center z-100 gap-2 p-2;
+
+    .swiper-pagination-bullet {
+      @apply w-2.5 h-2.5 rounded-full bg-transparent backdrop-blur-xl opacity-70 border border-white/50;
+    }
+
+    .swiper-pagination-bullet-active {
+      @apply bg-white! opacity-100;
+    }
+  }
+
+  select { 
+    appearance: base-select;
+    @apply bg-white border-b border-neutral-light px-3 py-2;
+
+    &::picker-icon {
+      content: "-";
+      @apply text-neutral-light;
+    } 
+
+    option {
+      @apply text-neutral-dark px-3 py-2 hover:bg-white ; 
+    }
+  }
+  
+  ::picker(select) { 
+    appearance: base-select;
+    @apply bg-white/50 backdrop-blur-xl border-0 rounded-xl mt-2;
   }
 }
 

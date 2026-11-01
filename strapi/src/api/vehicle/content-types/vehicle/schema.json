@@ -10,5 +10,91 @@
     "draftAndPublish": true
   },
   "pluginOptions": {},
-  "attributes": {}
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 150
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "vehicleModel": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vehicle-model.vehicle-model",
+      "inversedBy": "vehicles",
+      "required": true
+    },
+    "yearFrom": {
+      "type": "integer",
+      "required": true,
+      "min": 1886,
+      "max": 2100
+    },
+    "yearTo": {
+      "type": "integer",
+      "required": true,
+      "min": 1886,
+      "max": 2100
+    },
+    "variant": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "generation": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "chassisCode": {
+      "type": "string",
+      "maxLength": 50
+    },
+    "market": {
+      "type": "enumeration",
+      "enum": [
+        "uk",
+        "europe",
+        "north_america",
+        "global",
+        "other"
+      ],
+      "required": true,
+      "default": "uk"
+    },
+    "pcdBoltPattern": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pcd-bolt-pattern.pcd-bolt-pattern",
+      "required": true
+    },
+    "centreBore": {
+      "type": "decimal",
+      "required": true,
+      "min": 30,
+      "max": 150
+    },
+    "threadSize": {
+      "type": "string",
+      "required": true,
+      "maxLength": 30
+    },
+    "lugTorqueNm": {
+      "type": "integer",
+      "min": 50,
+      "max": 300
+    },
+    "wheelFitments": {
+      "type": "component",
+      "component": "data.vehicle-wheel-fitment",
+      "repeatable": true,
+      "required": true
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 1500
+    }
+  }
 }

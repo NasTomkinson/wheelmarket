@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vehicle_models",
+  "info": {
+    "singularName": "vehicle-model",
+    "pluralName": "vehicle-models",
+    "displayName": "Vehicle Models"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "make": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vehicle-make.vehicle-make",
+      "inversedBy": "models",
+      "required": true
+    },
+    "vehicles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vehicle.vehicle",
+      "mappedBy": "vehicleModel"
+    }
+  }
+}

@@ -1,18 +1,31 @@
-export default function ProductCard () {
+import { parseCurrency } from "@/utils/helpers";
+import CardGallery from './_components/gallery';
+ 
+
+export default function ProductCard ({ brand, title, price, images}) {  
+
     return (
         <div className="flex flex-col justify-start gap-2 border border-neutral-light shadow-xl rounded-xl overflow-hidden backdrop-blur-3xl">
             <div className="aspect-video overflow-hidden">
-                <img className="w-full h-full object-cover" src="https://www.bolawheels.co.uk/wp-content/uploads/2023/02/B19-MBR-1775-6-aspect-ratio-852-480.jpg" alt="Sample Image" />
+                { images && (
+                    <CardGallery slides={images} />
+                )}
+                
             </div> 
             <div className="flex flex-col gap-4 p-4">
 
                 <div className="flex flex-row items-end justify-between">
                     <div>
-                        <span className="uppercase text-sm"> Brand </span>
-                        <h3 className="text-xl"> Wheel Title </h3>                          
+                        { brand && (
+                            <span className="uppercase text-sm"> { brand.name } </span>
+                        )}
+                        { title && (
+                            <h3 className="text-xl"> {title} </h3>     
+                        )}
+                                             
                     </div>
                     <div>
-                        <span className="text-xl font-semibold"> £000.00 </span>
+                        <span className="text-xl font-semibold"> { parseCurrency(price) } </span>
                     </div>
                 </div>
 

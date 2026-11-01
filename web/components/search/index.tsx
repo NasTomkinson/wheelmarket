@@ -1,52 +1,150 @@
 "use client";
 
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react";
 
-export default function Search () {
+type VehicleModel = {
+  id: string;
+  name: string;
+  years: number[];
+};
 
-    const [advancedSearch, setAdvancedSearch] = useState<boolean>(false)
+type VehicleMake = {
+  id: string;
+  name: string;
+  models: VehicleModel[];
+};
 
-    function switchSearchModes () {
-        setAdvancedSearch(prev => !prev)
+type VehiclesResponse = {
+  data?: VehicleMake[];
+  message?: string;
+};
+
+export default function Search() {
+  const [makes, setMakes] = useState<VehicleMake[]>([]);
+  const [makeId, setMakeId] = useState("");
+  const [modelId, setModelId] = useState("");
+  const [year, setYear] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadVehicles() {
+      try {
+        const response = await fetch("/api/vehicles", {
+          signal: controller.signal,
+        });
+        const payload = (await response.json()) as VehiclesResponse;
+
+        if (!response.ok) {
+          throw new Error(payload.message ?? "Unable to load vehicles.");
+        }
+
+        setMakes(Array.isArray(payload.data) ? payload.data : []);
+      } catch (requestError) {
+        if (requestError instanceof Error && requestError.name === "AbortError") {
+          return;
+        }
+
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : "Unable to load vehicles.",
+        );
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
     }
 
-    return (
-        <div className="search">
+    loadVehicles();
 
-            { advancedSearch && (
-                <ul className="flex items-center gap-4">
-                    <li className="flex flex-col"> 
-                        <label className="text-sm italic font-bold" > Size </label>
-                        <select> 
-                            <option> 5 x 112 </option>
-                            <option> 5 x 120 </option>
-                        </select>
-                    </li>
-                    <li className="flex flex-col"> 
-                        <label className="text-sm italic font-bold" > Offset (ET) </label>
-                        <select> 
-                            <option> +35 </option>
-                            <option> +38 </option>
-                        </select>
-                    </li>
-                    <li className="flex flex-col"> 
-                        <label className="text-sm italic font-bold" > J </label>
-                        <select> 
-                            <option> 8J </option>
-                            <option> 8.5J </option>
-                        </select>
-                    </li>
-                </ul> 
-            )}
-            
-            { !advancedSearch && (
-                <input type="text" />
-            )}
+    return () => controller.abort();
+  }, []);
 
-            
-            <button className="text-sm italic font-bold" onClick={() => switchSearchModes()}> 
-                { advancedSearch ? 'Basic Search' : 'Advanced Search'}
-            </button>
-        </div>
-    )
+  const selectedMake = useMemo(
+    () => makes.find((make) => make.id === makeId),
+    [makeId, makes],
+  );
+  const models = selectedMake?.models ?? [];
+  const years = models.find((model) => model.id === modelId)?.years ?? [];
+
+  return (
+    <div className="search">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 ">
+        <label className="sr-only" htmlFor="vehicle-make">
+          Brand
+        </label>
+        <select
+          id="vehicle-make"
+          aria-label="Brand"
+          value={makeId}
+          disabled={isLoading || Boolean(error)}
+          onChange={(event) => {
+            setMakeId(event.target.value);
+            setModelId("");
+            setYear("");
+          }}
+        >
+          <option value="">
+            {isLoading ? "Loading brands…" : "Select brand"}
+          </option>
+          {makes.map((make) => (
+            <option key={make.id} value={make.id}>
+              {make.name}
+            </option>
+          ))}
+        </select>
+
+        <label className="sr-only" htmlFor="vehicle-model">
+          Model
+        </label>
+        <select
+          id="vehicle-model"
+          aria-label="Model"
+          value={modelId}
+          disabled={!makeId}
+          onChange={(event) => {
+            setModelId(event.target.value);
+            setYear("");
+          }}
+        >
+          <option value="">Select model</option>
+          {models.map((model) => (
+            <option key={model.id} value={model.id}>
+              {model.name}
+            </option>
+          ))}
+        </select>
+
+        <label className="sr-only" htmlFor="vehicle-year">
+          Model year
+        </label>
+        <select
+          id="vehicle-year"
+          aria-label="Model year"
+          value={year}
+          disabled={!modelId || years.length === 0}
+          onChange={(event) => setYear(event.target.value)}
+        >
+          <option value="">
+            {modelId && years.length === 0 ? "No years available" : "Select year"}
+          </option>
+          {years.map((modelYear) => (
+            <option key={modelYear} value={modelYear}>
+              {modelYear}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {error && (
+        <p className="mt-2 text-sm text-primary" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
 }
